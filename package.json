@@ -2,8 +2,8 @@
   "name": "end_sem_s2_prototype",
   "version": "1.0.0",
   "description": "",
-  "main": "script.js",
   "scripts": {
+    "build": "echo 'No build step required'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
