@@ -1,7 +1,8 @@
 {
   "name": "end_sem_s2_prototype",
   "version": "1.0.0",
-  "description": "",
+  "type": "module",
+  "description": "Study Hub for CSE C",
   "scripts": {
     "build": "echo 'No build step required'",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,13 +14,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/saharshbaiju/End_Sem_S2_prototype/issues"
-  },
-  "homepage": "https://github.com/saharshbaiju/End_Sem_S2_prototype#readme",
   "dependencies": {
-    "bcrypt": "^6.0.0",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
