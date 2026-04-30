@@ -170,3 +170,13 @@ localStorage.removeItem = function(key) {
         window.syncTimeout = setTimeout(() => syncToCloud(), 1500);
     }
 };
+
+function handleLogout() {
+    if (confirm("Are you sure you want to logout? Current changes will be synced.")) {
+        // Sync one last time to be safe
+        syncToCloud().then(() => {
+            localStorage.clear();
+            window.location.reload();
+        });
+    }
+}
