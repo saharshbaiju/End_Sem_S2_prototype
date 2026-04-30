@@ -2,12 +2,36 @@
 const API_URL = '/api';
 let isSignupMode = false;
 
-document.addEventListener('DOMContentLoaded', () => {
+function parseStoredCredentials() {
+    try {
+        return JSON.parse(localStorage.getItem('authCredentials'));
+    } catch {
+        return null;
+    }
+}
+
+function replaceLocalData(appData = {}) {
     const creds = localStorage.getItem('authCredentials');
+    localStorage.clear();
+
     if (creds) {
+        localStorage.setItem('authCredentials', creds);
+    }
+
+    if (appData && typeof appData === 'object') {
+        Object.entries(appData).forEach(([key, value]) => {
+            localStorage.setItem(key, value);
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const creds = parseStoredCredentials();
+    if (creds?.username && creds?.password) {
         // Automatically hide auth overlay if we have creds
         document.getElementById('auth-overlay').style.display = 'none';
     } else {
+        localStorage.removeItem('authCredentials');
         // Stop main content interactions if not logged in
         document.body.style.overflow = 'hidden';
     }
@@ -72,11 +96,10 @@ async function handleAuth() {
         // Store credentials to persist session and sync capability
         localStorage.setItem('authCredentials', JSON.stringify(payload));
         
-        if (!isSignupMode && result.data && Object.keys(result.data).length > 0) {
-            // Load user data into local storage from cloud if it exists
-            loadFromCloud(result.data);
+        if (!isSignupMode) {
+            loadFromCloud(result.data || {});
         } else {
-            // New user, let's just close auth modal
+            replaceLocalData({});
             unlockApp();
         }
     } catch (error) {
@@ -99,7 +122,12 @@ function unlockApp() {
             { id: 4, name: "Linear Algebra - Class Test", date: "2026-05-11", subject: "subj-linear", completed: false }
         ];
         
-        let loadedTasks = JSON.parse(localStorage.getItem('studyHubTasks'));
+        let loadedTasks = null;
+        try {
+            loadedTasks = JSON.parse(localStorage.getItem('studyHubTasks'));
+        } catch {
+            loadedTasks = null;
+        }
         if (loadedTasks) {
            tasks = loadedTasks;
         } else {
@@ -111,23 +139,13 @@ function unlockApp() {
 }
 
 function loadFromCloud(cloudData) {
-    // Preserve old credentials
-    const creds = localStorage.getItem('authCredentials');
-    localStorage.clear();
-    localStorage.setItem('authCredentials', creds);
-
-    for (let key in cloudData) {
-        localStorage.setItem(key, cloudData[key]);
-    }
-    
+    replaceLocalData(cloudData);
     unlockApp();
 }
 
 async function syncToCloud() {
-    const credsStr = localStorage.getItem('authCredentials');
-    if (!credsStr) return; 
-    
-    const credentials = JSON.parse(credsStr);
+    const credentials = parseStoredCredentials();
+    if (!credentials?.username || !credentials?.password) return;
 
     const dataObj = {};
     for (let i = 0; i < localStorage.length; i++) {

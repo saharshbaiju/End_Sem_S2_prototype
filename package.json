@@ -5,7 +5,6 @@
   "description": "Study Hub for CSE C",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "dotenv": "^17.4.2",
     "googleapis": "^171.4.0"
   }
 }

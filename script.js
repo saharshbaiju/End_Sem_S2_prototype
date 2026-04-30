@@ -6,7 +6,16 @@ const defaultTasks = [
     { id: 4, name: "Linear Algebra - Class Test", date: "2026-05-11", subject: "subj-linear", completed: false }
 ];
 
-let tasks = JSON.parse(localStorage.getItem('studyHubTasks')) || defaultTasks;
+function readJsonFromStorage(key, fallback) {
+    try {
+        const rawValue = localStorage.getItem(key);
+        return rawValue ? JSON.parse(rawValue) : fallback;
+    } catch {
+        return fallback;
+    }
+}
+
+let tasks = readJsonFromStorage('studyHubTasks', defaultTasks);
 
 // --- Render Task List ---
 function renderTasks() {
@@ -68,6 +77,7 @@ function saveTask() {
 
     if (idInput) {
         const taskIndex = tasks.findIndex(t => t.id == idInput);
+        if (taskIndex === -1) return alert("Task not found.");
         tasks[taskIndex] = { ...tasks[taskIndex], name: nameInput, date: dateInput, subject: subjectInput };
     } else {
         tasks.push({
